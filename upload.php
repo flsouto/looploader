@@ -1,18 +1,29 @@
 <?php
+parse_str(implode('&',$argv),$params);
+
 use FlSouto\Sampler;
 require_once(__DIR__."/utils.php");
 
 $uploaded = array_flip(array_map('trim',file(__DIR__."/uploaded.log")));
 $file = '';
 $hash = '';
-
+$remain = 0;
 foreach(glob($conf['queue_path']) as $f){
-    $h = str_replace('.mp3','',basename($f));
+    $h = str_replace(['.mp3','.wav'],'',basename($f));
     if(!isset($uploaded[$h])){
+        if(isset($params['--info'])){
+            $remain++;
+            continue;
+        }
         $hash = $h;
         $file = $f;
         break;
     }
+}
+
+if(isset($params['--info'])){
+    echo "Remain: $remain\n";
+    die();
 }
 
 if(!$file){
@@ -24,6 +35,13 @@ $bpm = fixBPM($s);
 
 if(strstr($file,'.mp3')){
     $s->save($file = "/dev/shm/$hash.wav");
+}
+
+$info = shell_exec("soxi $s->file");
+if(!stristr($info,'16-bit')){
+    $tmp = "/dev/shm/".uniqid().".wav";
+    shell_exec("sox $file -b16 $tmp");
+    $file = $tmp;
 }
 $ch = curl_init("https://www.looperman.com/loops/admin");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
