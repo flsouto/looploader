@@ -8,7 +8,9 @@ $uploaded = array_flip(array_map('trim',file(__DIR__."/uploaded.log")));
 $file = '';
 $hash = '';
 $remain = 0;
-foreach(glob($conf['queue_path']) as $f){
+$files = glob($conf['queue_path']);
+shuffle($files);
+foreach($files as $f){
     $h = str_replace(['.mp3','.wav'],'',basename($f));
     if(!isset($uploaded[$h])){
         if(isset($params['--info'])){
