@@ -11,6 +11,7 @@ $remain = 0;
 $files = glob($conf['queue_path']);
 shuffle($files);
 foreach($files as $f){
+    if(!stristr($f,'brk')) continue;
     $h = str_replace(['.mp3','.wav'],'',basename($f));
     if(!isset($uploaded[$h])){
         if(isset($params['--info'])){
@@ -22,7 +23,6 @@ foreach($files as $f){
         break;
     }
 }
-
 if(isset($params['--info'])){
     echo "Remain: $remain\n";
     die();
@@ -59,12 +59,13 @@ if(empty($m[1])){
 $csrf = $m[1];
 $cookies = "loop_csrfc=".$csrf;
 
+
 $fields['csrftoken'] = $csrf;
 $fields['loop_title'] = $hash;
 $fields['loop_desc'] = pick($conf['description']);
 $fields['loop_wav'] = new CurlFile($file, 'audio/wav');
-$fields['loop_cat_id'] = pick($conf['cat_id']);
-$fields['loop_genre_id'] = pick($conf['genre_id']);
+$fields['loop_cat_id'] = stristr($hash,'sy') ? '4' : pick($conf['cat_id']);
+$fields['loop_genre_id'] = stristr($hash,'brk') ? '37' : pick($conf['genre_id']);
 $fields['loop_meta_daw_id'] = '1';
 $fields['loop_tempo'] = $bpm;
 $fields['loop_key'] = '';
