@@ -64,8 +64,23 @@ $fields['csrftoken'] = $csrf;
 $fields['loop_title'] = $hash;
 $fields['loop_desc'] = pick($conf['description']);
 $fields['loop_wav'] = new CurlFile($file, 'audio/wav');
-$fields['loop_cat_id'] = stristr($hash,'sy') ? '4' : pick($conf['cat_id']);
+
+$fields['loop_cat_id'] = match(true){
+    !!stristr($hash,'sy') => '4',
+    default => pick($conf['cat_id'])
+};
+
+//$fields['loop_cat_id'] = stristr($hash,'sy') ? '4' : pick($conf['cat_id']);
+
+$fields['loop_genre_id'] = match(true){
+    !!stristr($hash,'brk') => '37',
+    !!stristr($hash,'amb') => '2',
+    default => pick($conf['genre_id'])
+};
+
 $fields['loop_genre_id'] = stristr($hash,'brk') ? '37' : pick($conf['genre_id']);
+
+
 $fields['loop_meta_daw_id'] = '1';
 $fields['loop_tempo'] = $bpm;
 $fields['loop_key'] = '';
