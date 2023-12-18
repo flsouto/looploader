@@ -8,10 +8,10 @@ $uploaded = array_flip(array_map('trim',file(__DIR__."/uploaded.log")));
 $file = '';
 $hash = '';
 $remain = 0;
-$files = glob($conf['queue_path']);
+//$files = glob($conf['queue_path']);
+$files = glob("queue/05e*a63.wav");
 shuffle($files);
 foreach($files as $f){
-    if(!stristr($f,'brk')) continue;
     $h = str_replace(['.mp3','.wav'],'',basename($f));
     if(!isset($uploaded[$h])){
         if(isset($params['--info'])){
@@ -33,18 +33,27 @@ if(!$file){
 }
 
 $s = sampler($file);
+$mb = filesize($file) / (1024 * 1024);
+
+if(filesize($file) > 8.5){
+    $s->cut(0,'1/2');
+}
+
 $bpm = fixBPM($s);
 
 if(strstr($file,'.mp3')){
     $s->save($file = "/dev/shm/$hash.wav");
+    $s = sampler($file);
 }
 
 $info = shell_exec("soxi $s->file");
 if(!stristr($info,'16-bit')){
     $tmp = "/dev/shm/".uniqid().".wav";
-    shell_exec("sox $file -b16 $tmp");
+    shell_exec("sox $s->file -b16 $tmp");
     $file = $tmp;
+    $s = sampler($file);
 }
+
 $ch = curl_init("https://www.looperman.com/loops/admin");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_COOKIEFILE, $conf['cookies_path']);
