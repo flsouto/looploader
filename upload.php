@@ -9,7 +9,7 @@ $file = '';
 $hash = '';
 $remain = 0;
 //$files = glob($conf['queue_path']);
-$files = glob("queue/05e*a63.wav");
+$files = glob("queue/*.wav");
 shuffle($files);
 foreach($files as $f){
     $h = str_replace(['.mp3','.wav'],'',basename($f));
