@@ -35,7 +35,7 @@ if(!$file){
 $s = sampler($file);
 $mb = filesize($file) / (1024 * 1024);
 
-if(filesize($file) > 8.5){
+if($mb > 8.5){
     $s->cut(0,'1/2');
 }
 
