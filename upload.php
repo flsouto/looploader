@@ -83,11 +83,12 @@ $fields['loop_cat_id'] = match(true){
 
 $fields['loop_genre_id'] = match(true){
     !!stristr($hash,'brk') => '37',
+    !!stristr($hash,'tr') => '54',
     !!stristr($hash,'amb') => '2',
     default => pick($conf['genre_id'])
 };
 
-$fields['loop_genre_id'] = stristr($hash,'brk') ? '37' : pick($conf['genre_id']);
+//$fields['loop_genre_id'] = stristr($hash,'brk') ? '37' : pick($conf['genre_id']);
 
 
 $fields['loop_meta_daw_id'] = '1';
