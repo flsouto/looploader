@@ -2,6 +2,7 @@
 
 $config = require(__DIR__."/config.php");
 
-foreach($config['backup_paths'] as $path){
-    passthru("rsync -avh $config[queue_path] $path");
+foreach($config['backup_paths'] as $to){
+    $from = dirname($config['queue_path']);
+    passthru("rsync -avhr --ignore-existing $from $to");
 }

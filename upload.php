@@ -8,8 +8,8 @@ $uploaded = array_flip(array_map('trim',file(__DIR__."/uploaded.log")));
 $file = '';
 $hash = '';
 $remain = 0;
-//$files = glob($conf['queue_path']);
-$files = glob("queue/*.wav");
+$files = glob($conf['queue_path']);
+//$files = glob("queue/*.wav");
 shuffle($files);
 foreach($files as $f){
     $h = str_replace(['.mp3','.wav'],'',basename($f));
